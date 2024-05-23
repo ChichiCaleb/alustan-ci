@@ -12,7 +12,7 @@ services:
       interval: 10s
       retries: 10
   calcom:
-    image: alustan/calcom:v4.1.18
+    image: alustan/calcom:v4.1.20
     ports:
       - 3000:3000
     env_file: .env
