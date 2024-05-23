@@ -285,44 +285,6 @@ yq --inplace ".services.calcom.image = \"${DOCKERHUB_USER}/calcom\"" infra/docke
 
 cp infra/docker/web/.env.example infra/docker/web/.env
 
-# Confirm with the user about the k8s manifest repo
-if gum confirm "Do you have a k8s manifest repo and wish to automate updating of image tag. Choose \"No\" if not setup."; then
-    echo "Please enter name of manifest repo"
-    REMOTE_REPO_NAME=$(gum input --placeholder "Name of manifest repo")
-    export REMOTE_REPO=$REMOTE_REPO_NAME
-
-    echo "Please enter name of workflow to run in manifest repo"
-    REMOTE_WORKFLOW_NAME=$(gum input --placeholder "Name of workflow")
-    export REMOTE_WORKFLOW=$REMOTE_WORKFLOW_NAME
-
-      yq eval '
-        (.jobs."tag-manifest-update-compose".steps[] | select(.name == "Set default values for manifest tag").run) = 
-        "echo \"PUSH_MANIFEST_TAG=true\" >> $GITHUB_ENV\n" +
-        "echo \"REMOTE_REPO='$REMOTE_REPO'\" >> $GITHUB_ENV\n" +
-        "echo \"REMOTE_WORKFLOW='$REMOTE_WORKFLOW'\" >> $GITHUB_ENV" +
-        "echo \"PREVIEW_WORKFLOW=''\" >> $GITHUB_ENV" +
-        "echo \"ENABLE_PREVIEW='false'\" >> $GITHUB_ENV" 
-
-        ' -i .github/workflows/ci.yml
-
-    # Confirm with the user about the E2E test with Preview Environment
-    if gum confirm "Do you wish to implement Preview Environment. Ensure preview manifest and workflow is setup. Choose \"No\" if not setup."; then
-        echo "Please enter name of \"PREVIEW\" workflow to run in manifest repo"
-        PREVIEW_WORKFLOW_NAME=$(gum input --placeholder "Name of workflow")
-        export PREVIEW_WORKFLOW=$PREVIEW_WORKFLOW_NAME
-
-      yq eval '
-        (.jobs."tag-manifest-update-compose".steps[] | select(.name == "Set default values for manifest tag").run) = 
-        "echo \"PUSH_MANIFEST_TAG=true\" >> $GITHUB_ENV\n" +
-        "echo \"REMOTE_REPO='$REMOTE_REPO'\" >> $GITHUB_ENV\n" +
-        "echo \"ENABLE_PREVIEW='true'\" >> $GITHUB_ENV" +
-        "echo \"PREVIEW_WORKFLOW='$PREVIEW_WORKFLOW'\" >> $GITHUB_ENV" +
-        "echo \"REMOTE_WORKFLOW=''\" >> $GITHUB_ENV"
-        ' -i .github/workflows/ci.yml
-
-    fi
-fi
-
 set +e
 
 git add .
@@ -348,4 +310,16 @@ gum style \
     --foreground 212 --border-foreground 212 --border double \
     --margin "1 2" --padding "2 4" \
     'Repo is ready!
-Open \"Actions\" and enable GitHub Actions'
+Open \"Actions\" and enable GitHub Actions.
+
+For continuous update of k8s manifest \"Image Tag\".
+Update the following fields in the workflow:
+
+name: Set default values for manifest tag
+run: |
+    echo "PUSH_MANIFEST_TAG='false'" >> $GITHUB_ENV
+    echo "ENABLE_PREVIEW='false'" >> $GITHUB_ENV
+    echo "REMOTE_REPO=''" >> $GITHUB_ENV
+    echo "REMOTE_WORKFLOW=''" >> $GITHUB_ENV
+    echo "PREVIEW_WORKFLOW=''" >> $GITHUB_ENV
+    '
