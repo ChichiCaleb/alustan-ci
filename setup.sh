@@ -302,14 +302,11 @@ set -e
 
 cd ..
 
-echo "Attempting to open the bootstrap repo in the browser..." 
-
-gh repo view --web $GITHUB_ORG/$REPO 2>/dev/null
-
 gum style \
     --foreground 212 --border-foreground 212 --border double \
     --margin "1 2" --padding "2 4" \
     'Repo is ready!
+Attempting to open the forked repo in the browser...
 Open \"Actions\" and enable GitHub Actions.
 
 For continuous update of k8s manifest \"Image Tag\".
@@ -323,3 +320,6 @@ run: |
     echo "REMOTE_WORKFLOW=''" >> $GITHUB_ENV
     echo "PREVIEW_WORKFLOW=''" >> $GITHUB_ENV
     '
+
+gh repo view --web $GITHUB_ORG/$REPO 2>/dev/null
+
