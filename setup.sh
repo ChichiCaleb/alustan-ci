@@ -301,7 +301,7 @@ if gum confirm "Do you have a k8s manifest repo and wish to automate updating of
         "echo \"PREVIEW_WORKFLOW=''\" >> $GITHUB_ENV" +
         "echo \"ENABLE_PREVIEW='false'\" >> $GITHUB_ENV" 
 
-        ' -i gitops-release/.github/workflows/ci.yml
+        ' -i .github/workflows/ci.yml
 
     # Confirm with the user about the E2E test with Preview Environment
     if gum confirm "Do you wish to implement Preview Environment. Ensure preview manifest and workflow is setup. Choose \"No\" if not setup."; then
@@ -316,7 +316,7 @@ if gum confirm "Do you have a k8s manifest repo and wish to automate updating of
         "echo \"ENABLE_PREVIEW='true'\" >> $GITHUB_ENV" +
         "echo \"PREVIEW_WORKFLOW='$PREVIEW_WORKFLOW'\" >> $GITHUB_ENV" +
         "echo \"REMOTE_WORKFLOW=''\" >> $GITHUB_ENV"
-        ' -i gitops-release/.github/workflows/ci.yml
+        ' -i .github/workflows/ci.yml
 
     fi
 fi
