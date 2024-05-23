@@ -125,6 +125,8 @@ function repo_clone() {
             echo "Failed to fetch latest changes from origin."
             return 1
         fi
+          git add .
+          git commit -m "update $repo_name "
 
         echo "Pulling latest changes with rebase..."
         if ! git pull origin main --rebase; then
