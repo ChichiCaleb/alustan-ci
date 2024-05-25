@@ -260,7 +260,6 @@ if gum confirm "Do you wish to enable git ssh authentication (RECOMMENDED- LARGE
     GIT_SSH=true
     export GH_GIT_PROTOCOL=ssh
     sudo gh config set git_protocol ssh
-    echo "GitHub CLI authenticated and configured to use SSH."
 else
     GIT_SSH=false
 fi
