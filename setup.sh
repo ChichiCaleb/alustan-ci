@@ -2,6 +2,27 @@
 
 set -e
 
+function get_valid_input() {
+    local placeholder=$1
+    local is_password=${2:-false}  # Default is_password to false if not provided
+    local user_input=""
+    local valid_input=false
+
+    while [ "$valid_input" = false ]; do
+        if [ "$is_password" = true ]; then
+            user_input=$(gum input --placeholder "$placeholder" --password)
+        else
+            user_input=$(gum input --placeholder "$placeholder")
+        fi
+
+        if [[ ${#user_input} -gt 2 ]]; then
+            valid_input=true
+        fi
+    done
+
+    echo "$user_input"
+}
+
 # Function to install Docker
 function install_docker() {
     sudo apt update
@@ -243,17 +264,19 @@ fi
 ###########################################################################################################
 
 echo "Enter GitHub organization or username"
-GITHUB_ORG=$(gum input --placeholder "Enter GitHub organization/username" --value "$GITHUB_ORG")
+GITHUB_ORG=$(get_valid_input "Enter GitHub organization/username")
+
 
 gum confirm "Do you wish to rename this repo? Choose \"No\" if you want to keep the upstream repo name." \
     && echo "Please enter repo name" \
-    && REPO_NAME=$(gum input --placeholder "Please enter repo name")
+    && REPO_NAME=$(get_valid_input "Please enter repo name")
+  
 
 REPO="${REPO_NAME:-alustan-ci}"
 export REPO
 
 echo "Please enter GitHub organization admin token"
-ORG_ADMIN_TOKEN=$(gum input --placeholder "Please enter GitHub organization admin token." --password)
+ORG_ADMIN_TOKEN=$(get_valid_input "Please enter GitHub organization admin token." true)
 export GH_TOKEN=$ORG_ADMIN_TOKEN
 
 if gum confirm "Do you wish to enable git ssh authentication (RECOMMENDED- LARGE REPO). Ensure git ssh is already setup"; then
@@ -277,13 +300,13 @@ fi
 
 gum confirm "We need to create GitHub secret DOCKERHUB_USERNAME. Choose \"No\" if you already have it." \
     && echo "Please enter Docker Hub user" \
-    && DOCKERHUB_USERNAME=$(gum input --placeholder "Please enter Docker Hub user") \
+    && DOCKERHUB_USERNAME=$(get_valid_input "Please enter Docker Hub user") \
     && export DOCKERHUB_USER=$DOCKERHUB_USERNAME \
     && create_docker_user_secret
 
 gum confirm "We need to create GitHub secret DOCKERHUB_TOKEN. Choose \"No\" if you already have it." \
     && echo "Please enter Docker Hub token" \
-    && DOCKERHUB_TOKEN=$(gum input --placeholder "Docker access token " --password) \
+    && DOCKERHUB_TOKEN=$(get_valid_input "Docker access token" true) \
     && create_docker_token_secret
 
 yq --inplace ".services.calcom.image = \"${DOCKERHUB_USER}/calcom\"" infra/docker/web/docker-compose.yaml
