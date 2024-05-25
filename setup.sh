@@ -10,7 +10,6 @@ function install_docker() {
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt update
     sudo apt install -y docker-ce
-    sudo service docker start
 }
 
 # Function to install GitHub CLI
@@ -213,6 +212,10 @@ fi
 if ! command -v docker &> /dev/null; then
     echo "Docker not found. Installing..."
     install_docker
+    if ! service docker status > /dev/null; then
+        echo "Docker is not running. Starting Docker..."
+        sudo service docker start
+    fi
 fi
 
 # Check if Docker Compose is installed
@@ -263,7 +266,7 @@ else
 fi
 
 # Example usage of the function
-echo "Starting repo_fork_clone..."
+echo "Starting repo_fork and clone..."
 repo_fork
 repo_clone || true  # Allow script to continue even if cloning fails
 
