@@ -172,11 +172,31 @@ function repo_clone() {
 }
 
 
+# Check if Gum is installed
+if ! command -v gum &> /dev/null; then
+    echo "Gum not found. Installing..."
+    echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' | sudo tee /etc/apt/sources.list.d/charm.list
+    sudo apt update && sudo apt install -y gum
+fi
+
 ##########################################################################################################
 
 ###########################################################################################################
 
 
+
+gum style \
+    --foreground 212 --border-foreground 212 --border double \
+    --margin "1 2" --padding "2 4" \
+    'alustan/alustan-ci aims to implement Continuous Integration (CI) and 
+automated release best practices using Calcom monorepo as reference application'
+
+gum confirm 'Are you ready to bootstrap a personal fork of alustan-ci repo?' || exit 0
+
+
+##########################################################################################################
+
+###########################################################################################################
 
 # Check if curl is installed
 if ! command -v curl &> /dev/null; then
@@ -215,26 +235,9 @@ if ! command -v yq &> /dev/null; then
     sudo chmod a+x /usr/local/bin/yq
 fi
 
-# Check if Gum is installed
-if ! command -v gum &> /dev/null; then
-    echo "Gum not found. Installing..."
-    echo 'deb [trusted=yes] https://repo.charm.sh/apt/ /' | sudo tee /etc/apt/sources.list.d/charm.list
-    sudo apt update && sudo apt install -y gum
-fi
-
 ##########################################################################################################
 
 ###########################################################################################################
-
-
-
-gum style \
-    --foreground 212 --border-foreground 212 --border double \
-    --margin "1 2" --padding "2 4" \
-    'alustan/alustan-ci aims to implement Continuous Integration (CI) and 
-automated release best practices using Calcom monorepo as reference application'
-
-gum confirm 'Are you ready to bootstrap a personal fork of alustan-ci repo?' || exit 0
 
 echo "Enter GitHub organization or username"
 GITHUB_ORG=$(gum input --placeholder "Enter GitHub organization/username" --value "$GITHUB_ORG")
