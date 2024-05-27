@@ -254,7 +254,7 @@ jobs:
           input-file: "./apps/web/CHANGELOG.md"
           output-file: "./apps/web/CHANGELOG.md"
           tag-prefix: "v"
-          pre-release: ${{github.event_name == 'pull_request'}}
+          pre-release: ${{github.event_name == 'pull_request_target'}}
           pre-release-identifier: "alpha"
           skip-on-empty: 'false'
           # release-count: 20
