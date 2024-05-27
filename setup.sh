@@ -335,6 +335,7 @@ gum style \
     --margin "1 2" --padding "2 4" \
     'Repo is ready!
 Attempting to open the forked repo in the browser...
+Enable organization or repository \"Read and write permissions\" 
 Open \"Actions\" and enable GitHub Actions.
 
 For continuous update of k8s manifest \"Image Tag\".

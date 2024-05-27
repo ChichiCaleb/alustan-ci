@@ -65,14 +65,18 @@ Here is what you need to be able to run **alustan-ci**.
 
 2. The script provisions everything, pushes the customized codebase to your personal repository and opens the forked repo in the browser 
 
-3. Run the workflow using `workflow_dispatch` in the UI , alternatively push changes to main branch
+3. On **github UI** enable organization or repository `Read and write permissions` 
+
+4. On **github UI** Open `Actions` and enable GitHub Actions.
+
+4. Run the workflow using `workflow_dispatch` in the UI , alternatively push changes to main branch
     
-4. create a pull request to the main branch with subsequent merge and observe a trigger of ci workflow in github actions tab, with generation of release,prerelease and changelog notes
+5. create a pull request to the main branch with subsequent merge and observe a trigger of ci workflow in github actions tab, with generation of release,prerelease and changelog notes
    
-5. start the services in docker compose
+6. start the services in docker compose
 
    ```sh
    docker compose -f infra/docker/web/docker-compose.yaml up
    ```
 
-6. view the app in the browser on `http://localhost:3000`
+7. view the app in the browser on `http://localhost:3000`
