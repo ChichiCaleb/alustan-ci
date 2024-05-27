@@ -325,19 +325,19 @@ jobs:
     #  adds the Docker image tag(s)/labels pushed to docker hub,to the pull request comment section for reference purpose    
       - name: Find comment for image tags
         uses: peter-evans/find-comment@v1
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         id: fc
         with:
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: ${{ github.event.pull_request_target.number }}
           comment-author: 'github-actions[bot]'
           body-includes: Docker image tag(s) pushed
      
       - name: Create or update comment for image tags
         uses: peter-evans/create-or-update-comment@v1
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: ${{ github.event.pull_request_target.number }}
           body: |
             Docker image tag(s) pushed:
             ```text
@@ -354,7 +354,7 @@ jobs:
 # adds a "preview" label to pull reguest to main branch
       - name: add labels 
         uses: actions-ecosystem/action-add-labels@v1
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         with:
           labels: |
             preview
