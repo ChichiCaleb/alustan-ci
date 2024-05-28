@@ -1,9 +1,10 @@
 
 # Continuous Integration (CI) and automated release best practices
 
->  #### **alustan-ci** aims to implement Continuous Integration (CI) and automated release best practices using [Calcom](https://github.com/calcom/cal.com) monorepo as reference application
+<img width="100%" alt="architecture" src="./architecture.jpg">
 
-![architecture](architecture.svg)
+
+>  #### **alustan-ci** aims to implement Continuous Integration (CI) and automated release best practices using [Calcom](https://github.com/calcom/cal.com) monorepo as reference application
 
 
 ## Features
