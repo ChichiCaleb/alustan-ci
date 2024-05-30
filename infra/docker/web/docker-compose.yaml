@@ -12,7 +12,7 @@ services:
       interval: 10s
       retries: 10
   calcom:
-    image: horizonclient/calcom:v4.1.40
+    image: alustan/calcom:v4.1.41
     ports:
       - 3000:3000
     env_file: .env
