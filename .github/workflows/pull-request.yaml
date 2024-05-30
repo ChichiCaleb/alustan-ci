@@ -6,7 +6,8 @@ on:
   pull_request: 
     branches:
       - main
-  
+    types: [opened, synchronize]
+   
  
 
 
@@ -17,6 +18,7 @@ jobs:
   build-test-image:
     name: Build Image for Testing
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
     permissions:
      contents: write 
      packages: write 
@@ -70,6 +72,7 @@ jobs:
     name: unit test in docker
     needs: [build-test-image]
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       packages: read
       contents: read
@@ -117,6 +120,7 @@ jobs:
     name: Integration test in Compose
     needs: [build-test-image]
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       packages: read
       contents: read
@@ -163,6 +167,7 @@ jobs:
     name: Scan Image with Trivy
     needs: [build-test-image]
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
 
     permissions:
       contents: read 
@@ -224,6 +229,7 @@ jobs:
     name: automated changelog using conventional commit
     needs: [build-test-image, unit-test, integration-test, scan-image]
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
     outputs:
       TAG: ${{ steps.docker_tag.outputs.TAG }}
     permissions:
@@ -281,6 +287,7 @@ jobs:
     name: Build Final Image
     needs: [unit-test, integration-test, scan-image,changelog]
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
 
     permissions:
       contents: write
@@ -375,6 +382,7 @@ jobs:
     name: Tag kubernetes manifest and update compose
     needs: [unit-test, integration-test, scan-image,changelog,build-final-image]
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write 
     
