@@ -324,20 +324,20 @@ jobs:
      
       - name: Find comment for image tags
         uses: peter-evans/find-comment@v3.1.0
-        if: github.event_name == 'pull_request' 
+        if: github.event_name == 'pull_request_target' 
         id: fc
         with:
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: "${{ github.event.pull_request_target.number }}"
           comment-author: 'github-actions[bot]'
           body-includes: Docker image tag(s) pushed
       
         # If PR, put image tags in the PR comments
       - name: Create or update comment for image tags
         uses: peter-evans/create-or-update-comment@v4.0.0
-        if: github.event_name == 'pull_request' && inputs.comment-enable
+        if: github.event_name == 'pull_request_target' && inputs.comment-enable
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: "${{ github.event.pull_request_target.number }}"
           body: |
             Docker image tag(s) pushed:
             ```text
