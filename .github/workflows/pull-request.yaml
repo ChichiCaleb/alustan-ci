@@ -7,6 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+# FIRST JOB ####################################################################### 
   build-test-image:
     name: Build Image for Testing
     runs-on: ubuntu-latest
@@ -55,6 +56,7 @@ jobs:
             type=gha,scope=base
           platforms: linux/amd64
 
+# NEXT JOB #######################################################################
   unit-test:
     name: unit test in docker
     needs: [build-test-image]
@@ -96,7 +98,8 @@ jobs:
             type=gha,scope=base
             type=gha,scope=test
           platforms: linux/amd64
-        
+
+# NEXT JOB #######################################################################        
   integration-test:
     name: Integration test in Compose
     needs: [build-test-image]
@@ -138,7 +141,8 @@ jobs:
           sleep 60s
 
           curl --fail http://localhost:3000 || exit 1
-          
+
+# NEXT JOB #######################################################################         
   scan-image:
     name: Scan Image with Trivy
     needs: [build-test-image]
@@ -191,6 +195,7 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
+# NEXT JOB #######################################################################
   changelog:
     name: automated changelog using conventional commit
     needs: [build-test-image, unit-test, integration-test, scan-image]
@@ -239,6 +244,7 @@ jobs:
         run: |
           echo "TAG=${{ steps.changelog.outputs.tag }}" >> $GITHUB_OUTPUT
 
+# NEXT JOB #######################################################################
   build-final-image:
     name: Build Final Image
     needs: [unit-test, integration-test, scan-image, changelog]
@@ -278,18 +284,6 @@ jobs:
           tags: |
             ${{ needs.changelog.outputs.TAG }}
           
-      - name: Build and Push to Docker Hub
-        uses: docker/build-push-action@v5
-        with:
-          file: infra/docker/web/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-to: |
-            type=gha,scope=base,mode=max
-          cache-from: |
-            type=gha,scope=base
-          platforms: linux/amd64
-
       - name: Create or update comment for image tags
         uses: peter-evans/create-or-update-comment@v4.0.0
         if: github.event_name == 'pull_request' 
@@ -306,6 +300,25 @@ jobs:
             ```
           edit-mode: replace
 
+      - name: Add labels 
+        uses: actions-ecosystem/action-add-labels@v1
+        if: github.event_name == 'pull_request'
+        with:
+          labels: preview
+          
+      - name: Docker Build and Push to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          file: infra/docker/web/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          cache-from: type=gha,scope=base
+          platforms: linux/amd64
+
+
+# NEXT JOB #######################################################################
   tag-manifest-update-compose:
     name: Tag kubernetes manifest and update compose
     needs: [unit-test, integration-test, scan-image, changelog, build-final-image]
