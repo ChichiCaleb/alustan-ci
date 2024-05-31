@@ -108,7 +108,6 @@ jobs:
           platforms: linux/amd64
         
         
-  
   # # # # # NEXT JOB #######################################################################   
   # pulls test image from GHCR and run integration test in docker compose testing ability of the built app 
   # to succesfully connect to postgres db
