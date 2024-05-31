@@ -1,11 +1,12 @@
 ---
-name:  Docker CI Pull Request Target
+name:  Docker CI Pull Request
 
 on:
 
   pull_request_target: 
     branches:
       - main
+    types: [opened, synchronize, reopened]
   
 
 
@@ -251,7 +252,7 @@ jobs:
           input-file: "./apps/web/CHANGELOG.md"
           output-file: "./apps/web/CHANGELOG.md"
           tag-prefix: "v"
-          pre-release: ${{github.event_name == 'pull_request_target'}}
+          pre-release: "${{github.event_name == 'pull_request_target'}}"
           pre-release-identifier: "alpha"
           skip-on-empty: 'false'
           # release-count: 20
@@ -319,26 +320,18 @@ jobs:
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
             type=raw,value=${{needs.changelog.outputs.TAG}}
 
-    #  adds the Docker image tag(s)/labels pushed to docker hub,to the pull request comment section for reference purpose    
-      - name: Find comment for image tags
-        uses: peter-evans/find-comment@v1
-        if: github.event_name == 'pull_request_target'
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request_target.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Docker image tag(s) pushed
-     
+   
+       # If PR, put image tags in the PR comments
       - name: Create or update comment for image tags
-        uses: peter-evans/create-or-update-comment@v1
-        if: github.event_name == 'pull_request_target'
+        uses: peter-evans/create-or-update-comment@v4.0.0
+        if: github.event_name == 'pull_request_target' && inputs.comment-enable
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request_target.number }}
+          issue-number: "${{ github.event.pull_request_target.number }}"
           body: |
             Docker image tag(s) pushed:
             ```text
-            ${{ steps.docker_meta.outputs.tags }}
+            ${{ steps.docker_meta.outputs.tags }} 
             ```
 
             Labels added to images:

@@ -6,7 +6,7 @@ on:
   pull_request: 
     branches:
       - main
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
    
  
 
@@ -257,7 +257,7 @@ jobs:
           input-file: "./apps/web/CHANGELOG.md"
           output-file: "./apps/web/CHANGELOG.md"
           tag-prefix: "v"
-          pre-release: ${{github.event_name == 'pull_request'}}
+          pre-release: "${{github.event_name == 'pull_request'}}"
           pre-release-identifier: "alpha"
           skip-on-empty: 'false'
           # release-count: 20
@@ -326,16 +326,7 @@ jobs:
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
             type=raw,value=${{needs.changelog.outputs.TAG}}
 
-    #  adds the Docker image tag(s)/labels pushed to docker hub,to the pull request comment section for reference purpose    
-      - name: Find comment for image tags
-        uses: peter-evans/find-comment@v1
-        if: github.event_name == 'pull_request'
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Docker image tag(s) pushed
-     
+  
       - name: Create or update comment for image tags
         uses: peter-evans/create-or-update-comment@v1
         if: github.event_name == 'pull_request'
