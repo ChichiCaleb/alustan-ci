@@ -1,5 +1,5 @@
 ---
-name:  Docker CI Pull Request Target
+name: Docker CI Pull Request Target
 
 on:
 
