@@ -270,7 +270,6 @@ jobs:
           echo "TAG=${{ steps.changelog.outputs.tag }}" >> $GITHUB_OUTPUT
          
          
-
 # NEXT JOB #######################################################################  
 # builds the final image and adds latest tag and image:V*.*.* semantic versioning tag to merge request
 # and image:v*.*.*-alpha.* tag to pull requests made to main branch before pushing to dockerhub
