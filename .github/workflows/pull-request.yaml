@@ -284,21 +284,13 @@ jobs:
           tags: |
             ${{ needs.changelog.outputs.TAG }}
           
-      - name: Create or update comment for image tags
-        uses: peter-evans/create-or-update-comment@v4.0.0
-        if: github.event_name == 'pull_request' 
+      - name: Comment on pull request
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          issue-number: "${{ github.event.pull_request.number }}"
-          body: |
-            Docker image tag(s) pushed:
-            ```text
-            ${{ steps.docker_meta.outputs.tags }} 
-            ```
-            Labels added to images:
-            ```text
-            ${{ steps.docker_meta.outputs.labels }}
-            ```
-          edit-mode: replace
+          header: final-image
+          message: |
+            image tag: ${{ steps.docker_meta.outputs.tags }}
+            image label: ${{ steps.docker_meta.outputs.labels }}
 
       - name: Add labels 
         uses: actions-ecosystem/action-add-labels@v1
