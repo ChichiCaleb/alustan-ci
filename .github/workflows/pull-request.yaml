@@ -1,5 +1,5 @@
 ---
-name:  Docker CI Pull Request
+name: Docker CI Pull Request
 
 on:
   
