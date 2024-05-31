@@ -1,5 +1,5 @@
 ---
-name:  Docker CI Pull Request
+name:  Docker CI Pull Request Target
 
 on:
 
@@ -326,7 +326,6 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4.0.0
         if: github.event_name == 'pull_request_target' && inputs.comment-enable
         with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: "${{ github.event.pull_request_target.number }}"
           body: |
             Docker image tag(s) pushed:
